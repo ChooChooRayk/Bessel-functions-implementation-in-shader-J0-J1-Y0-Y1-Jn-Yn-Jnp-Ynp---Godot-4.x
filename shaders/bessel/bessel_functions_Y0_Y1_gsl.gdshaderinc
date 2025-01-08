@@ -54,12 +54,12 @@ float cheb_series(cheb_series_type cs, float x) {
         e += abs(y2*temp) + abs(dd) + abs(cs.coeff[j]);
         dd = temp;
     }
-    { 
+    {
     float temp = d;
         d = y*d - dd + 0.5 * cs.coeff[0];
         e += abs(y*temp) + abs(dd) + 0.5 * abs(cs.coeff[0]);
     }
-    float val = d;   
+    float val = d;
     float err =  GSL_DBL_EPSILON * e + abs(cs.coeff[order]);
     return val;
 }
@@ -95,7 +95,7 @@ float gsl_sf_bessel_sin_pi4_e(float y, float eps) {
     err *= 256.0 * y * GSL_SQRT_DBL_EPSILON;
     }
     */
-  
+
     return val;
 }
 
@@ -269,7 +269,7 @@ float gsl_sf_bessel_Y0(const float x) {
 #define GSL_DBL_MIN        2.2250738585072014e-308
 
 const float bm1_data[30] = {
-   0.1047362510931285, 
+   0.1047362510931285,
    0.00442443893702345,
   -0.00005661639504035,
    0.00000231349417339,
@@ -300,7 +300,7 @@ const cheb_series_type _gsl_sf_bessel_amp_phase_bm1_cs = cheb_series_type(
 );
 
 const float bth1_data[30] = {
-   0.74060141026313850, 
+   0.74060141026313850,
   -0.004571755659637690,
    0.000119818510964326,
   -0.000006964561891648,
