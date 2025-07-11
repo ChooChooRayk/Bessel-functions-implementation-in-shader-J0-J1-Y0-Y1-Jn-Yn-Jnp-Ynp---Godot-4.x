@@ -1,16 +1,32 @@
 @tool
+class_name PlotLine2D
 extends Line2D
-
-@export var _path_to_line_data_points : String
 
 var data_pts  : Array[Vector2]
 var xy_min: Vector2 = -Vector2.ONE
 var xy_max: Vector2 = +Vector2.ONE
 
+#region: PLOT methods
+
+func plot(x:Array[float], y:Array[float])->void:
+	assert(x.size()==y.size(), "Error x and y not the same size.")
+	# ---
+	data_pts.clear()
+	data_pts.resize(x.size())
+	for i in range(x.size()):
+		data_pts[i] = Vector2(x[i], y[i])
+	# ---
+	set_line()
+	return
+
+#endregion
+
+#region: MANAGEMENT
+
 func set_plot_frame(x_min, x_max,y_min, y_max)->void:
 	xy_min = Vector2(x_min, y_min)
 	xy_max = Vector2(x_max, y_max)
-	
+
 func set_line()->void:
 	clear_points()
 	# ---
@@ -30,16 +46,4 @@ func set_line()->void:
 		add_point(new_pt)
 	return
 
-func extract_data()->void:
-	var file = FileAccess.open(_path_to_line_data_points, FileAccess.READ)
-	# ---
-	var extrct_lines : Array[PackedStringArray]
-	while !file.eof_reached():
-		var line = file.get_csv_line()
-		extrct_lines.append(line)
-	# ---
-	data_pts.clear()
-	for i in range(extrct_lines[0].size()):
-		var func_xy := Vector2(float(extrct_lines[0][i]),-float(extrct_lines[1][i]))
-		data_pts.append(func_xy)
-	return
+#endregion

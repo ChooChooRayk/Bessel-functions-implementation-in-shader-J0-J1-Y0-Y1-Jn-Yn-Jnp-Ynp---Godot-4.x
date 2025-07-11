@@ -6,8 +6,8 @@ extends Control
 @onready var grid    : ShaderMaterial = $Grid    .material
 @onready var origin  : ShaderMaterial = $Origin  .material
 @onready var function: ShaderMaterial = $Function.material
-@onready var function_line: Line2D = %FunctionLine
-@onready var bessel_plotter_from_txt_data: Control = $BesselScipyDataPlotter
+@onready var function_line: PlotLine2D = %FunctionLine
+@onready var bessel_plotter_from_txt_data: BesselPlotterFromTxtData = $BesselScipyDataPlotter
 
 
 @export_tool_button("Update plot") var update_action := update_plot
@@ -29,9 +29,19 @@ func update_plot()->void:
 	function.set_shader_parameter("_n", bessel_idx)
 	# ---
 	bessel_plotter_from_txt_data.make_path_to_data()
+	bessel_plotter_from_txt_data.extract_data()
+	var x_data :Array[float]= []
+	var y_data :Array[float]= []
+	# ---
+	if bessel_type in [BesselPlotterFromTxtData.BESSEL_TYPE.J,BesselPlotterFromTxtData.BESSEL_TYPE.Y,BesselPlotterFromTxtData.BESSEL_TYPE.Jp, BesselPlotterFromTxtData.BESSEL_TYPE.Yp]:
+		x_data.assign(bessel_plotter_from_txt_data.data_array.map(func (elmt:Vector3): return elmt.x))
+		y_data.assign(bessel_plotter_from_txt_data.data_array.map(func (elmt:Vector3): return elmt.y))
+	else:
+		x_data.assign(bessel_plotter_from_txt_data.data_array.map(func (elmt:Vector3): return elmt.y))
+		y_data.assign(bessel_plotter_from_txt_data.data_array.map(func (elmt:Vector3): return elmt.z))
+	# ---
 	function_line.set_plot_frame(x_min, x_max,y_min, y_max)
-	function_line.extract_data()
-	function_line.set_line()
+	function_line.plot(x_data, y_data)
 	return
 
 func update_shader_params()->void:
