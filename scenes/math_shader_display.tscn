@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://cyrccjpo3re6h"]
 
-[ext_resource type="Script" path="res://scenes/math_shader_display.gd" id="1_qbvd1"]
-[ext_resource type="Script" path="res://scenes/bessel_scipy_data_plotter.gd" id="2_57665"]
-[ext_resource type="Shader" path="res://shaders/tools/grid_shader.gdshader" id="2_stx0j"]
-[ext_resource type="Script" path="res://scenes/function_line.gd" id="3_bwl12"]
-[ext_resource type="Shader" path="res://shaders/bessel/bessel_func.gdshader" id="4_v7753"]
+[ext_resource type="Script" uid="uid://b8eaps700swd6" path="res://scenes/math_shader_display.gd" id="1_qbvd1"]
+[ext_resource type="Script" uid="uid://cuwb7jl6k0ca7" path="res://scenes/bessel_scipy_data_plotter.gd" id="2_57665"]
+[ext_resource type="Shader" uid="uid://c46fujd8y2hmy" path="res://shaders/tools/grid_shader.gdshader" id="2_stx0j"]
+[ext_resource type="Script" uid="uid://baskbeedtyiom" path="res://scenes/function_line.gd" id="3_bwl12"]
+[ext_resource type="Shader" uid="uid://ccrwusuhol04e" path="res://shaders/bessel/bessel_func.gdshader" id="4_v7753"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0r05l"]
 resource_local_to_scene = true
