@@ -10,7 +10,7 @@ extends Control
 @onready var bessel_plotter_from_txt_data: Control = $BesselScipyDataPlotter
 
 
-@export var update := false
+@export_tool_button("Update plot") var update_action := update_plot
 @export_category("Math Params")
 @export var x_min :=-1.0
 @export var x_max := 1.0
@@ -21,25 +21,19 @@ extends Control
 @export var bessel_type  :BesselPlotterFromTxtData.BESSEL_TYPE = BesselPlotterFromTxtData.BESSEL_TYPE.Jp
 
 
+func update_plot()->void:
+	update_shader_params()
+	# ---
+	bessel_plotter_from_txt_data.bessel_idx  = bessel_idx
+	bessel_plotter_from_txt_data.bessel_type = bessel_type
+	function.set_shader_parameter("_n", bessel_idx)
+	# ---
+	bessel_plotter_from_txt_data.make_path_to_data()
+	function_line.set_plot_frame(x_min, x_max,y_min, y_max)
+	function_line.extract_data()
+	function_line.set_line()
+	return
 
-func _ready() -> void:
-	update = true
-
-func _process(delta: float) -> void:
-	if update:
-		update_shader_params()
-		# ---
-		bessel_plotter_from_txt_data.bessel_idx  = bessel_idx
-		bessel_plotter_from_txt_data.bessel_type = bessel_type
-		function.set_shader_parameter("_n", bessel_idx)
-		# ---
-		bessel_plotter_from_txt_data.make_path_to_data()
-		function_line.set_plot_frame(x_min, x_max,y_min, y_max)
-		function_line.extract_data()
-		function_line.set_line()
-		update = false
-	pass
-	
 func update_shader_params()->void:
 	var x_amp := (x_max-x_min)
 	var y_amp := (y_max-y_min)
