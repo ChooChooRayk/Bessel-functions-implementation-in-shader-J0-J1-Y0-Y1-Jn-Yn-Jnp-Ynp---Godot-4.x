@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://drmapyn36y2pr"]
+
+[ext_resource type="Shader" uid="uid://d0h5g32itt7mo" path="res://shaders/bessel/bessel_plot_H1_H2_func.gdshader" id="1_rr61f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mlp16"]
+shader = ExtResource("1_rr61f")
+shader_parameter/_scale_axes = Vector2(10, 10)
+shader_parameter/grid_origin = Vector2(0, 0)
+shader_parameter/_line_width = 0.014
+shader_parameter/which_bessel_func = 0
+shader_parameter/_n = 0
+shader_parameter/_var_min = -1.0
+shader_parameter/_var_max = 20.0
+
+[node name="Tests" type="ColorRect"]
+material = SubResource("ShaderMaterial_mlp16")
+offset_right = 641.0
+offset_bottom = 417.0

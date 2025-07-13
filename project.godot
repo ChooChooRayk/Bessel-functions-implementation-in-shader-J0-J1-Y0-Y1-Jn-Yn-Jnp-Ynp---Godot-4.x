@@ -18,3 +18,9 @@ config/icon="res://icon.svg"
 [dotnet]
 
 project/assembly_name="Godot_Bessel_functions_shader"
+
+[file_customization]
+
+folder_colors={
+"res://shaders/": "pink"
+}

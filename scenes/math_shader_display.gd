@@ -19,6 +19,10 @@ extends Control
 @export_category("Specific bessel")
 @export var bessel_idx  := 0
 @export var bessel_type  :BesselPlotterFromTxtData.BESSEL_TYPE = BesselPlotterFromTxtData.BESSEL_TYPE.Jp
+@export_file(".gdshader") var shader_plot_J_Y   = "res://shaders/bessel/bessel_plot_J_Y_func.gdshader"
+@export_file(".gdshader") var shader_plot_H1_H2 = "res://shaders/bessel/bessel_plot_H1_H2_func.gdshader"
+
+var shader_file_path : StringName
 
 
 func update_plot()->void:
@@ -45,6 +49,13 @@ func update_plot()->void:
 	return
 
 func update_shader_params()->void:
+	var shdr_special_var:Array = []
+	if bessel_type in [BesselPlotterFromTxtData.BESSEL_TYPE.J, BesselPlotterFromTxtData.BESSEL_TYPE.Y, BesselPlotterFromTxtData.BESSEL_TYPE.Jp, BesselPlotterFromTxtData.BESSEL_TYPE.Yp]:
+		shader_file_path = shader_plot_J_Y
+	else:
+		shader_file_path = shader_plot_H1_H2
+		shdr_special_var = [0.01, 20.0]
+	# ---
 	var x_amp := (x_max-x_min)
 	var y_amp := (y_max-y_min)
 	var origin_pos = -Vector2((x_max+x_min)/2., -(y_max+y_min)/2.)
@@ -56,7 +67,12 @@ func update_shader_params()->void:
 	origin.set_shader_parameter("grid_origin", origin_pos)
 	origin.set_shader_parameter("grid_period", Vector2(x_amp, y_amp))
 	# ---
+	function.shader = load(shader_file_path) as Shader
 	function.set_shader_parameter("_scale_axes", Vector2(x_amp, y_amp))
 	function.set_shader_parameter("grid_origin", origin_pos)
-	function.set_shader_parameter("which_bessel_func", int(bessel_type))
+	function.set_shader_parameter("which_bessel_func", int(bessel_type)%4)
+	if shdr_special_var.size()!=0:
+		function.set_shader_parameter("_pts_nbr", 100)
+		function.set_shader_parameter("_var_min", shdr_special_var[0])
+		function.set_shader_parameter("_var_max", shdr_special_var[1])
 	return

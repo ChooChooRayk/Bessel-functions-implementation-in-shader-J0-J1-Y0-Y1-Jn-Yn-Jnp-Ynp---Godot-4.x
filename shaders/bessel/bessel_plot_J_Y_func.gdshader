@@ -7,6 +7,7 @@ uniform int which_bessel_func : hint_range(0, 5, 1) = 0;
 // --- BESSEL FUNCTIONS --- //
 #include "./bessel_functions_J.gdshaderinc"
 #include "./bessel_functions_Y.gdshaderinc"
+#include "./bessel_functions_H1H2.gdshaderinc"
 group_uniforms Bessel;
 uniform int _n  = 0; // [i]
 
@@ -24,6 +25,7 @@ void fragment() {
     float Y =-uv_centered.y;
     // ---
     float func_x;
+	vec2 func_xy;
     switch (which_bessel_func) {
         case 0:
             func_x = Bessel_Jvn(_n,X);
@@ -38,10 +40,10 @@ void fragment() {
             func_x = Bessel_Yvpn(_n,X);
             break;
         case 4:
-            func_x = 0.0*X;
+            func_xy = Bessel_H1vn(_n,X);
             break;
         case 5:
-            func_x = 0.0*X;
+            func_xy = Bessel_H2vn(_n,X);
             break;
     }
     float line = Y - func_x;

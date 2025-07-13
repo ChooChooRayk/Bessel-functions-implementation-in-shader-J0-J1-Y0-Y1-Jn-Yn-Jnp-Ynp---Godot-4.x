@@ -57,7 +57,7 @@ func extract_data()->void:
 		var func_xy :Array[float]= [0.0,0.0,0.0]
 		for k in range(col_nbr):
 			func_xy[k] = float(extrct_lines[k][i])
-		data_array.append(Vector3(func_xy[0],-func_xy[1],func_xy[2]))
+		data_array.append(Vector3(func_xy[0],-func_xy[1],func_xy[2]))# x, -y, z ; -y because y-axis direction is downward
 	return
 
 #endregion
