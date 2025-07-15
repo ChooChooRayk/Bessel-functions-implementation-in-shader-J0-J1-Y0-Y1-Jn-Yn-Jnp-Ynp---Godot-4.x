@@ -1,6 +1,9 @@
 /*
 	COMPLEX MATH METHODS
 	from : https://gist.github.com/DonKarlssonSan/f87ba5e4e5f1093cb83e39024a6a5e72
+	--- --- --- ---
+	Complex number are represented by vec2 types.
+	Implementation of the main complex operation. Some are juste re-naming of vector algebra.
 */
 
 // MAIN METHODS //
@@ -34,7 +37,8 @@ vec2 cx_pow(vec2 a, float n) {// Complex power: let z = r(cos θ + i sin θ) => 
     return vec2(real, im);
 }
 
-// IMPORTANT FUNCTIONS //
+// IMPORTANT TRANSFORMATIONS //
+#define cx_exp(a) exp(a.x) * vec2(cos(a.y), sin(a.y))
 #define cx_sin(a) vec2(sin(a.x) * cosh(a.y), cos(a.x) * sinh(a.y))
 #define cx_cos(a) vec2(cos(a.x) * cosh(a.y), -sin(a.x) * sinh(a.y))
 vec2 cx_tan(vec2 a) {return cx_div(cx_sin(a), cx_cos(a)); }
