@@ -52,30 +52,35 @@ float mie_radial_scattered_intensity_SglPW_para(float phi, float wvlth, float Rn
 	    limiting case of large r, from the nanowire.
 	* phi [rad], wvlth [nm], Rnw [nm], n_idx [1], Ei0 [V.m^-1], N_mie [1]
 	*/
-	float c_light      = 299792458.0; // [m.s^-1]
-	float eps0         = 8.85418782e-12; // [F.m^−1]
+	//float c_light      = 299792458.0; // [m.s^-1]
+	//float eps0         = 8.85418782e-12; // [F.m^−1]
 	// ---
 	//float k0           = 2.0*PI/wvlth;
 	float rho          = 2.0*PI*Rnw/wvlth;
 	// ---
 	float Ir           = 0.0 ;
-	vec2 Ir_tmp;
+	vec2 Ir_tmp        = vec2(0.0);
 	// ---
 	vec2 amp_coeff_ij  = vec2(1.0); //c_light*eps0/2. * Ei0*cx_conj(Ei0);
 	// ---
 	//cs_m = as_m
 	//CS_dic = {m0:as_m(m0, k0, n_idx, Rnw) for m0 in tqdm(range(N_mie), disable=not(verbose))}
 	for (int m0=0; m0<N_mie; m0++)
-	for (int l0=0; m0<m0+1 ; l0++)
 	{
-		Ir_tmp  = ( cx_mul(amp_coeff_ij ,  cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)))) );
-		Ir_tmp *= (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
-		// ---
-		Ir += Ir_tmp.x;
+		for (int l0=0; l0<m0+1 ; l0++)
+		{
+			Ir_tmp  = ( cx_mul(amp_coeff_ij ,  cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)))) );
+			//Ir_tmp  = cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)));
+			Ir_tmp *= (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
+			// ---
+			//Ir_tmp  = cx_conj(as_m(m0, 1.0, n_idx, rho));
+			//Ir_tmp = vec2(1.0) * (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
+			Ir += Ir_tmp.x;
+		}
 	}
 	// ---  --- //
 	//Ir *= 2.0/(PI*k0);
-	Ir *=  wvlth/(PI*PI);
+	//Ir *=  wvlth/(PI*PI);
 	// ---  --- //
 	return Ir;
 }

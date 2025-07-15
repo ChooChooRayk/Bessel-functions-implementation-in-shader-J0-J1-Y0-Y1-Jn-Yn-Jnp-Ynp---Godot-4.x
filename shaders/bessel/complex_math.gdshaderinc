@@ -26,7 +26,7 @@ vec2 cx_sqrt(vec2 a) {//square root for complex number
 vec2 cx_to_polar(vec2 a) {
     float phi = atan(a.y, a.x);
     float r = length(a);
-    return vec2(r, phi); 
+    return vec2(r, phi);
 }
 
 vec2 cx_pow(vec2 a, float n) {// Complex power: let z = r(cos θ + i sin θ) => z^n = r^n (cos nθ + i sin nθ)
