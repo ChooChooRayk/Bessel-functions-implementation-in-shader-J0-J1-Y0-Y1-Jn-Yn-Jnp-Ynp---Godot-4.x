@@ -1,0 +1,197 @@
+[gd_scene load_steps=16 format=3 uid="uid://c6vur1g2j5ssm"]
+
+[ext_resource type="Shader" uid="uid://dcpdofm0v2cse" path="res://shaders/mie_scattering_cylinder/mie_scattering_3D.gdshader" id="1_4cekj"]
+[ext_resource type="Script" uid="uid://bpiswbnsybk2" path="res://tests/mie_tests.gd" id="1_b4cv6"]
+[ext_resource type="Shader" uid="uid://bluaw1dnagk6k" path="res://shaders/mie_scattering_cylinder/nw_aspect.gdshader" id="2_ysls8"]
+[ext_resource type="Shader" uid="uid://mml4vjnp7d73" path="res://shaders/mie_scattering_cylinder/laser_aspect.gdshader" id="3_ffht1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4cekj"]
+
+[sub_resource type="Sky" id="Sky_ysls8"]
+sky_material = SubResource("ProceduralSkyMaterial_4cekj")
+
+[sub_resource type="Environment" id="Environment_b1ojm"]
+background_mode = 2
+background_color = Color(1, 1, 1, 1)
+sky = SubResource("Sky_ysls8")
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+glow_enabled = true
+volumetric_fog_density = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ffht1"]
+render_priority = 0
+shader = ExtResource("1_4cekj")
+shader_parameter/wvlth1_nm = 430.9
+shader_parameter/rad_nw = 155.0
+shader_parameter/coeff_sum = 20
+shader_parameter/mesh_height = 1.0
+shader_parameter/coeff_mult = 1.54
+shader_parameter/rad_offset = 0.15
+shader_parameter/alpha_decay = 2.8
+shader_parameter/glow_enrg = 10.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_4cekj"]
+radius = 1.0
+radial_segments = 256
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b4cv6"]
+render_priority = 0
+shader = ExtResource("2_ysls8")
+shader_parameter/level = 1.0
+shader_parameter/emission_intensity = 0.0
+shader_parameter/fresnel_color = Color(0, 0, 0, 1)
+shader_parameter/fresnel_intensity = 4.831
+shader_parameter/fresnel_power = 3.73
+shader_parameter/mtrl_color = Color(0.55, 0.55, 0.55, 1)
+shader_parameter/residual_clr_int = 0.1
+shader_parameter/residual_transparency = 1.0
+shader_parameter/alpha_mltiplyer = 1.0
+shader_parameter/laser_wvlth = 632.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4cekj"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 18.832
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_b4cv6"]
+frequency = 0.0051
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_80n1p"]
+noise = SubResource("FastNoiseLite_b4cv6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_80n1p"]
+render_priority = 0
+shader = ExtResource("3_ffht1")
+shader_parameter/laser_wvlth = 632.0
+shader_parameter/glow_enrg = 5.0
+shader_parameter/alpha_decay = 2.6
+shader_parameter/txtr = SubResource("NoiseTexture2D_80n1p")
+shader_parameter/txtr_speed = 0.5
+shader_parameter/stretch_ratio = Vector2(0.165, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ysls8"]
+height = 29.722
+
+[node name="test3D" type="Node3D"]
+script = ExtResource("1_b4cv6")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_b1ojm")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.767053, 0.641584, 0, -0.641584, 0.767053, -4.76837e-07, 6.46311, 7.80356)
+
+[node name="MieScatt" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_ffht1")
+mesh = SubResource("SphereMesh_4cekj")
+
+[node name="NW" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_b4cv6")
+mesh = SubResource("CylinderMesh_4cekj")
+
+[node name="Laser" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 15, 0, 0)
+material_override = SubResource("ShaderMaterial_80n1p")
+mesh = SubResource("CylinderMesh_ysls8")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UI" type="PanelContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/UI"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI/MarginContainer"]
+layout_mode = 2
+
+[node name="grid" type="GridContainer" parent="CanvasLayer/UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lambda"
+
+[node name="wvl_val" type="HSlider" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 350.0
+max_value = 850.0
+step = 0.1
+value = 632.0
+
+[node name="WvlLbl" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label2" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Radius"
+
+[node name="rad_val" type="HSlider" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 50.0
+max_value = 500.0
+step = 0.1
+value = 150.0
+
+[node name="RadLbl" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/grid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="CanvasLayer/UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Play Sweep"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "min"
+
+[node name="MinVal" type="SpinBox" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 350.0
+max_value = 850.0
+step = 0.1
+value = 350.0
+
+[node name="Label2" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "max"
+
+[node name="MaxVal" type="SpinBox" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 350.0
+max_value = 850.0
+step = 0.1
+value = 850.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/UI/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Duration"
+
+[node name="SweepTime" type="SpinBox" parent="CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+value = 20.0
+
+[connection signal="value_changed" from="CanvasLayer/UI/MarginContainer/VBoxContainer/grid/wvl_val" to="." method="_on_wavelength_changed"]
+[connection signal="value_changed" from="CanvasLayer/UI/MarginContainer/VBoxContainer/grid/rad_val" to="." method="_on_radius_changed"]
+[connection signal="pressed" from="CanvasLayer/UI/MarginContainer/VBoxContainer/Button" to="." method="_on_play_sweep"]

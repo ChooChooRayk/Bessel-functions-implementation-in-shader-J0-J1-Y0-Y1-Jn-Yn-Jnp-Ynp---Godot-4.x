@@ -12,7 +12,6 @@ uniform sampler2D clr_map;
 //uniform sampler3D mesh;
 
 
-//#include "res://shaders/bessel/complex_math.gdshaderinc"
 #include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
 #include "res://shaders/tools/colorimetry.gdshaderinc"
 

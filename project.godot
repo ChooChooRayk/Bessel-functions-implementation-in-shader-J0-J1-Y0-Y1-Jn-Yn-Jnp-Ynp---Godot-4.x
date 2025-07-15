@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="Godot_Bessel_functions_shader"
 
+[editor]
+
+movie_writer/movie_file="C:/Users/cleme/Desktop/GameDev/GODOT_projects_and_others/Godot_Bessel_functions_shader/tests/mie_diagram_in_game.avi"
+
 [file_customization]
 
 folder_colors={
