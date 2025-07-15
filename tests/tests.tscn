@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://drmapyn36y2pr"]
 
-[ext_resource type="Shader" uid="uid://dsg07hv6m0x16" path="res://shaders/mie_scattering_cylinder/mie_scattering_plot.gdshader" id="1_rr61f"]
+[ext_resource type="Shader" uid="uid://bjr1qtoagof1v" path="res://shaders/mie_scattering_cylinder/mie_scattering_plot.gdshader" id="1_rr61f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mlp16"]
 shader = ExtResource("1_rr61f")

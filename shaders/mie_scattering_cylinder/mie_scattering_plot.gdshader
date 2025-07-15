@@ -29,4 +29,6 @@ void fragment() {
 	float wvlth = wvlth_nm*1.0e-9;
 	float n_idx = n_idx_3CSiC_shaffer1971(wvlth_nm);
 	//float Ir = mie_radial_scattered_intensity_SglPW_para(r_phi.y, wvlth, rad_nw*1.0e-9, n_idx, vec2(1.0,0.0), 1);
+	// ---  --- //
+	COLOR.rgb = vec3(0.5);
 }
