@@ -1,22 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://drmapyn36y2pr"]
+[gd_scene load_steps=3 format=3 uid="uid://drmapyn36y2pr"]
 
 [ext_resource type="Shader" uid="uid://bjr1qtoagof1v" path="res://shaders/mie_scattering_cylinder/mie_scattering_plot.gdshader" id="1_rr61f"]
 
-[sub_resource type="Gradient" id="Gradient_rr61f"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_mlp16"]
-gradient = SubResource("Gradient_rr61f")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mlp16"]
 shader = ExtResource("1_rr61f")
-shader_parameter/wvlth_nm = 632.0
-shader_parameter/rad_nw = 100.0
-shader_parameter/coeff_sum = 1
-shader_parameter/linewidth = 0.1
-shader_parameter/coeff_mult = 0.5
-shader_parameter/clr_map = SubResource("GradientTexture1D_mlp16")
+shader_parameter/wvlth1_nm = 669.0
+shader_parameter/wvlth2_nm = 477.0
+shader_parameter/rad_nw = 177.0
+shader_parameter/coeff_sum = 10
+shader_parameter/linewidth = 0.067
+shader_parameter/coeff_mult = 0.11
 
 [node name="Tests" type="ColorRect"]
 material = SubResource("ShaderMaterial_mlp16")
-offset_right = 10.0
-offset_bottom = 10.0
+offset_right = 100.0
+offset_bottom = 100.0
