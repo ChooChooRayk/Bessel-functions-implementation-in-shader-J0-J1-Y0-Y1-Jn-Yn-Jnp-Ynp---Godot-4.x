@@ -4,7 +4,7 @@ uniform float wvlth_nm :hint_range(450, 850, 1) = 632.; // [nm]
 uniform float rad_nw   :hint_range(40, 1000, 1) = 100.; // [nm]
 
 #include "res://shaders/bessel/complex_math.gdshaderinc"
-#include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
+//#include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
 
 
 float n_idx_3CSiC_shaffer1971(float wvl_nm) {
@@ -28,8 +28,9 @@ void fragment() {
 	// ---
 	float wvlth = wvlth_nm*1.0e-9;
 	float n_idx = n_idx_3CSiC_shaffer1971(wvlth_nm);
-	//vec2 mie_coeff_as = as_m(0, 1.0, n_idx, 2.0*PI*rad_nw/wvlth_nm)
+	// 
+	//vec2 mie_coeff_as = cx_mul(as_m(m0, k0, n_idx, Rnw) , cx_conj( as_m(l0, k0, n_idx, Rnw))); //as_m(0, 1.0, n_idx, 2.0*PI*rad_nw/wvlth_nm);
 	//float Ir = mie_radial_scattered_intensity_SglPW_para(r_phi.y, wvlth, rad_nw*1.0e-9, n_idx, vec2(1.0,0.0), 1);
 	// ---  --- //
-	COLOR.rgb = vec3(0.5);
+	//COLOR.rgb = vec3(length(mie_coeff_as));
 }
