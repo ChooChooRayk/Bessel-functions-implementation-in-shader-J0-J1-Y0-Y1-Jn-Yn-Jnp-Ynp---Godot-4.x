@@ -10,7 +10,6 @@
 
 #include "res://shaders/bessel/complex_math.gdshaderinc"
 #include "res://shaders/bessel/bessel_functions_J.gdshaderinc"
-#include "res://shaders/bessel/bessel_functions_Y.gdshaderinc"
 #include "res://shaders/bessel/bessel_functions_H1H2.gdshaderinc"
 
 vec2 ai_m(int m) {
@@ -35,7 +34,6 @@ vec2 bs_m(int m, float k0, float n_idx, float R) {
 
 // ============ Scattered Intensity ============ //
 
-
 float eps_m0_l0(int m0, int l0) {
 	/*
 		Symetry factor for the sum over the modes in the asymptotic radial intensity
@@ -43,7 +41,6 @@ float eps_m0_l0(int m0, int l0) {
 	*/
     return (8.0/(1.0 + float(m0==l0) + float(0==l0) + float(m0==0) + 4.0*float(m0==l0)*float(0==l0)*float(m0==0)));
 }
-
 
 float mie_radial_scattered_intensity_SglPW_para(float phi, float wvlth, float Rnw, float n_idx, vec2 Ei0, int N_mie) {
 	/*
@@ -55,32 +52,28 @@ float mie_radial_scattered_intensity_SglPW_para(float phi, float wvlth, float Rn
 	//float c_light      = 299792458.0; // [m.s^-1]
 	//float eps0         = 8.85418782e-12; // [F.m^−1]
 	// ---
-	//float k0           = 2.0*PI/wvlth;
-	float rho          = 2.0*PI*Rnw/wvlth;
+	float rho          = 2.0*PI/wvlth * Rnw;
 	// ---
 	float Ir           = 0.0 ;
 	vec2 Ir_tmp        = vec2(0.0);
 	// ---
 	vec2 amp_coeff_ij  = vec2(1.0); //c_light*eps0/2. * Ei0*cx_conj(Ei0);
 	// ---
-	//cs_m = as_m
-	//CS_dic = {m0:as_m(m0, k0, n_idx, Rnw) for m0 in tqdm(range(N_mie), disable=not(verbose))}
+	vec2 As_m[20];
+	for (int m=0; m<N_mie;m++){
+		As_m[m] = as_m(m, 1.0, n_idx, rho);
+	}
+	// ---
 	for (int m0=0; m0<N_mie; m0++)
+	for (int l0=0; l0<m0+1 ; l0++)
 	{
-		for (int l0=0; l0<m0+1 ; l0++)
-		{
-			Ir_tmp  = ( cx_mul(amp_coeff_ij ,  cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)))) );
-			//Ir_tmp  = cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)));
-			Ir_tmp *= (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
-			// ---
-			//Ir_tmp  = cx_conj(as_m(m0, 1.0, n_idx, rho));
-			//Ir_tmp = vec2(1.0) * (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
-			Ir += Ir_tmp.x;
-		}
+		//Ir_tmp  = ( cx_mul(amp_coeff_ij ,  cx_mul(as_m(m0, 1.0, n_idx, rho) , cx_conj( as_m(l0, 1.0, n_idx, rho)))) );
+		Ir_tmp  = ( cx_mul(amp_coeff_ij ,  cx_mul(As_m[m0], cx_conj( As_m[l0]))) );
+		//Ir_tmp *= (1.0-2.0*float(abs(m0-l0)%2)) * (eps_m0_l0(m0,l0)) * cos(float(m0)*phi)*cos(float(l0)*phi);
+		Ir += Ir_tmp.x * (1.0-2.0*float(abs(m0-l0)%2)) * eps_m0_l0(m0,l0) * cos(float(m0)*phi)*cos(float(l0)*phi);
 	}
 	// ---  --- //
-	//Ir *= 2.0/(PI*k0);
-	//Ir *=  wvlth/(PI*PI);
+	//Ir *=  wvlth/(PI*PI); // 2.0/(PI*k0)
 	// ---  --- //
 	return Ir;
 }

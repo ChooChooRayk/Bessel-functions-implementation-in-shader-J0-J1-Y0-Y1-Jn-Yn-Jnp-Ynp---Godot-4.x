@@ -3,16 +3,16 @@ shader_type canvas_item;
 uniform float wvlth_nm :hint_range(450, 850, 1) = 632.; // [nm]
 uniform float rad_nw   :hint_range( 40, 500, 1) = 100.; // [nm]
 uniform int coeff_sum :hint_range(0, 20, 1) = 1; // [1]
-uniform int _m0 = 0;
-uniform int _l0 = 0;
+//uniform int _m0 = 0;
+//uniform int _l0 = 0;
 uniform float linewidth :hint_range(0.0, 1.0, 0.001) = 0.1;
 uniform float coeff_mult:hint_range(0.0, 100.0, 0.1) = 1.0;
 uniform sampler2D clr_map;
 //uniform sampler3D mesh;
 
 
-#include "res://shaders/bessel/complex_math.gdshaderinc"
-#include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
+//#include "res://shaders/bessel/complex_math.gdshaderinc"
+//#include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
 
 
 float n_idx_3CSiC_shaffer1971(float wvl_nm) {
@@ -32,14 +32,16 @@ float n_idx_3CSiC_shaffer1971(float wvl_nm) {
 
 void fragment() {
 	vec2 uv_centered = (UV-0.5)*2.0;
-	vec2 r_phi = cx_to_polar(uv_centered);
+	//vec2 r_phi  = cx_to_polar(uv_centered);
+	float uv_rad = length(uv_centered);
+	float uv_agl = atan(uv_centered.y, uv_centered.x);
 	float n_idx = n_idx_3CSiC_shaffer1971(wvlth_nm);
 	// ---
 	float irr = 1.0;
-	//irr *= mie_radial_scattered_intensity_SglPW_para(r_phi.y, wvlth_nm, rad_nw, n_idx, vec2(1.0,0.0), coeff_sum);
-	irr *= cos(float(_m0)*r_phi.y)*cos(float(_l0)*r_phi.y);
+	//irr *= mie_radial_scattered_intensity_SglPW_para(uv_agl, wvlth_nm, rad_nw, n_idx, vec2(1.0,0.0), coeff_sum);
+	//irr *= cos(float(_m0)*uv_agl)*cos(float(_l0)*uv_agl);
 	// ---  --- //
-	float line = r_phi.x - abs(irr)*coeff_mult;
+	float line = uv_rad - abs(irr)*coeff_mult;
 	float var_1d = clamp(line, 0.0, 1.0);//step(linewidth, abs(line));
 	//float var_1d = 1.0;
 	// ---
