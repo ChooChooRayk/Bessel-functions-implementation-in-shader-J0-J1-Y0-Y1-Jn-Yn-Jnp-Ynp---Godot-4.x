@@ -13,6 +13,7 @@ func _on_wavelength_changed(_wvl_nm:float)->void:
 	nw_aspect.set_shader_parameter("laser_wvlth", _wvl_nm)
 	var laser_shdr := laser.material_override as ShaderMaterial
 	laser_shdr.set_shader_parameter("laser_wvlth", _wvl_nm)
+	$OmniLight3D.mie_wvlth = _wvl_nm
 
 func _on_radius_changed(_rad_nm:float)->void:
 	$CanvasLayer/UI/MarginContainer/VBoxContainer/grid/RadLbl.text = "%.1f"%_rad_nm
@@ -23,6 +24,8 @@ func _on_radius_changed(_rad_nm:float)->void:
 	var mesh := nw.mesh as CylinderMesh
 	mesh.top_radius    = 0.1*_rad_nm/150.
 	mesh.bottom_radius = 0.1*_rad_nm/150.
+	# ---
+	$OmniLight3D.nw_rad = _rad_nm
 
 func _on_play_sweep()->void:
 	var min_val = $CanvasLayer/UI/MarginContainer/VBoxContainer/HBoxContainer/MinVal.value

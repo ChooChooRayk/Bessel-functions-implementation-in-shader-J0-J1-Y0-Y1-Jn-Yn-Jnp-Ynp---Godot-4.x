@@ -15,6 +15,10 @@ config/tags=PackedStringArray("toolbox")
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/vsync/vsync_mode=0
+
 [dotnet]
 
 project/assembly_name="Godot_Bessel_functions_shader"

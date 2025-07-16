@@ -3,7 +3,7 @@
 	at normal incidence on an infinite cylinder in vaccum, with radius R in [m],
 	internal refractive index n_idx [1]. The incident radiation has its wave vector
 	in vaccum k0=2*PI/lambda in [m^-1], lambda being the wavelength in [m].
-	
+
 	The coefficient for parallel are "a", and "b" for perpendicular incident
 	polarisation.
 */
@@ -76,4 +76,21 @@ float mie_radial_scattered_intensity_SglPW_para(float phi, float wvlth, float Rn
 	//Ir *=  wvlth/(PI*PI); // 2.0/(PI*k0)
 	// ---  --- //
 	return Ir;
+}
+
+// ============ NW PROPERTIES ============ //
+
+float n_idx_3CSiC_shaffer1971(float wvl_nm) {
+	/*
+    * Compute the effective refractive index of bulk 3C-SiC at a given
+      wavelength.
+    * Source : https://refractiveindex.info/?shelf=main&book=SiC&page=Shaffer
+               Shaffer 1971: β-SiC
+    * Arguments:
+        - wvl_nm : float, considered wavelength in vacuum in [nm]
+    */
+    float a = 2.5538;
+    float b = 3.42 * 10000.;
+	// ---
+    return a + b/pow(wvl_nm,2);
 }

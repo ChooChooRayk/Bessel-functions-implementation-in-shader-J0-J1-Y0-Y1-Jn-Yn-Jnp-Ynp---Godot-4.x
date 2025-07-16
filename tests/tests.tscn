@@ -1,15 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://drmapyn36y2pr"]
 
-[ext_resource type="Shader" uid="uid://bjr1qtoagof1v" path="res://shaders/mie_scattering_cylinder/mie_scattering_plot.gdshader" id="1_rr61f"]
+[ext_resource type="Shader" uid="uid://b43tw7s52af71" path="res://shaders/mie_scattering_cylinder/mie_scattering_lighting.gdshader" id="1_rr61f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mlp16"]
 shader = ExtResource("1_rr61f")
-shader_parameter/wvlth1_nm = 669.0
-shader_parameter/wvlth2_nm = 477.0
+shader_parameter/wvlth1_nm = 440.3
 shader_parameter/rad_nw = 177.0
 shader_parameter/coeff_sum = 10
-shader_parameter/linewidth = 0.067
-shader_parameter/coeff_mult = 0.11
+shader_parameter/agl_offset = 0.1
+shader_parameter/height_span = 0.1
+shader_parameter/height_trans = 0.16
+shader_parameter/alpha_res = 0.0
 
 [node name="Tests" type="ColorRect"]
 material = SubResource("ShaderMaterial_mlp16")

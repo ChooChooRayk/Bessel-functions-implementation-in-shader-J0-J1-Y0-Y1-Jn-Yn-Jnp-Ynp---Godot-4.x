@@ -15,21 +15,6 @@ uniform sampler2D clr_map;
 #include "res://shaders/mie_scattering_cylinder/mie_functions.gdshaderinc"
 #include "res://shaders/tools/colorimetry.gdshaderinc"
 
-float n_idx_3CSiC_shaffer1971(float wvl_nm) {
-	/*
-    * Compute the effective refractive index of bulk 3C-SiC at a given
-      wavelength.
-    * Source : https://refractiveindex.info/?shelf=main&book=SiC&page=Shaffer
-               Shaffer 1971: β-SiC
-    * Arguments:
-        - wvl_nm : float, considered wavelength in vacuum in [nm]
-    */
-    float a = 2.5538;
-    float b = 3.42 * 10000.;
-	// ---
-    return a + b/pow(wvl_nm,2);
-}
-
 void fragment() {
 	vec2 uv_centered = (UV-0.5)*2.0;
 	//vec2 r_phi  = cx_to_polar(uv_centered);
