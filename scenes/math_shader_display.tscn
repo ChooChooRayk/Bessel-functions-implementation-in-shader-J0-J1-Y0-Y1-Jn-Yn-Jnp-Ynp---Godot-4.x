@@ -26,14 +26,14 @@ shader_parameter/thickness = 0.548
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u8ket"]
 shader = ExtResource("3_n2kkc")
-shader_parameter/_scale_axes = Vector2(4, 4)
+shader_parameter/_scale_axes = Vector2(1, 1)
 shader_parameter/grid_origin = Vector2(0, 0)
-shader_parameter/_line_width = 0.012
+shader_parameter/_line_width = 0.01
 shader_parameter/which_bessel_func = 0
 shader_parameter/_n = 0
-shader_parameter/_var_min = 0.01
-shader_parameter/_var_max = 20.0
-shader_parameter/_pts_nbr = 100
+shader_parameter/_var_min = -1.0
+shader_parameter/_var_max = 1.0
+shader_parameter/_pts_nbr = 10
 
 [node name="MathShaderDisplay" type="Control"]
 layout_mode = 3

@@ -2,6 +2,8 @@
 // ====== BESSEL : J ====== //
 // ====== ========== ====== //
 
+#include "./bessel_functions_J0_J1_gsl.gdshaderinc"
+
 // From : https://www.shadertoy.com/view/Wt3czM
 // https://link.springer.com/article/10.1007/s40314-020-01238-z
 float BesselJ0(float x) {
@@ -113,13 +115,13 @@ float Bessel_Jvn_small(int n, float x) {
 	int m = 14;
     float mm = float(m), nn = float(n);
     float s = 0.0, h = 0.5 * PI/mm;
-
+    
     for (int k = 0; k < m; k++)
     {
         float t = h * (float(k) + 0.5);
         s += (((n & 1) == 1) ? (sin(x * sin(t)) * sin(nn * t)) : (cos(x * cos(t)) * cos(nn * t)))/mm;
     }
-
+    
     return ((n & 1) == 1) ? s : (((((n >> 1) & 1) == 1) ? -1.0 : 1.0) * s);
 }
 

@@ -2,7 +2,7 @@
 // ====== BESSEL : Y ====== //
 // ====== ========== ====== //
 
-#include "./bessel_functions_J.gdshaderinc"
+//#include "./bessel_functions_J.gdshaderinc"
 #include "./bessel_functions_Y0_Y1_gsl.gdshaderinc"
 
 float BesselYn(int n, float x) {
