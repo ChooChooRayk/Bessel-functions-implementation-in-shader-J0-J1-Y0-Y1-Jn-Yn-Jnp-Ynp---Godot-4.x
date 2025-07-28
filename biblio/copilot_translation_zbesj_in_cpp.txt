@@ -1,0 +1,149 @@
+Notes:
+
+    This routine expects you to provide proper implementations or values for D1MACH, I1MACH, ZBINU, and ZABS. You may need to adjust the stubs for your platform.
+    The output arrays CYR, CYI are filled by ZBINU and then processed.
+    Error codes IERR and NZ are returned as per the original Fortran logic.
+    The C++ code uses standard library math and vector types.
+    If you need complex output, you can modify CYR and CYI to a vector of std::complex<double>, but I kept it as real/imaginary split to match the Fortran interface.
+
+Let me know if you need the missing helper routines (ZBINU, etc.) or a more idiomatic C++ interface!
+
+
+
+
+
+#include <cmath>
+#include <algorithm>
+#include <complex>
+#include <vector>
+
+using std::complex;
+using std::vector;
+
+// Stub functions for D1MACH, I1MACH, ZABS
+double D1MACH(int i) {
+    // Machine constants, replace with actual values or logic as needed
+    switch (i) {
+        case 1: return std::numeric_limits<double>::min();    // Smallest positive magnitude
+        case 4: return std::numeric_limits<double>::epsilon(); // Precision
+        case 5: return std::log10(2.0);                       // log10(radix)
+        default: return 1.0;
+    }
+}
+
+int I1MACH(int i) {
+    // Machine integer constants
+    switch (i) {
+        case 9: return 308;   // Largest exponent
+        case 14: return 15;   // Number of digits in mantissa
+        case 15: return 2147483647; // Largest integer
+        case 16: return 2147483647; // Largest integer
+        default: return 1;
+    }
+}
+
+double ZABS(double zr, double zi) {
+    return std::hypot(zr, zi);
+}
+
+// Prototype for ZBINU (to be implemented or stubbed)
+void ZBINU(double ZNR, double ZNI, double FNU, int KODE, int N,
+           vector<double>& CYR, vector<double>& CYI, int& NZ, double RL, double FNUL,
+           double TOL, double ELIM, double ALIM) {
+    // This is a stub. Fill in with actual computation.
+    CYR.resize(N, 1.0);
+    CYI.resize(N, 0.0);
+    NZ = 0;
+}
+
+// The main translation
+void ZBESJ(double ZR, double ZI, double FNU, int KODE, int N,
+           vector<double>& CYR, vector<double>& CYI, int& NZ, int& IERR)
+{
+    IERR = 0;
+    NZ = 0;
+    if (FNU < 0.0) IERR = 1;
+    if (KODE < 1 || KODE > 2) IERR = 1;
+    if (N < 1) IERR = 1;
+    if (IERR != 0) return;
+
+    // Machine constants
+    double TOL = std::max(D1MACH(4), 1.0e-18);
+    int K1 = I1MACH(15);
+    int K2 = I1MACH(16);
+    double R1M5 = D1MACH(5);
+    int K = std::min(std::abs(K1), std::abs(K2));
+    double ELIM = 2.303 * (static_cast<double>(K) * R1M5 - 3.0);
+    K1 = I1MACH(14) - 1;
+    double AA = R1M5 * static_cast<double>(K1);
+    double DIG = std::min(AA, 18.0);
+    AA = AA * 2.303;
+    double ALIM = ELIM + std::max(-AA, -41.45);
+    double RL = 1.2 * DIG + 3.0;
+    double FNUL = 10.0 + 6.0 * (DIG - 3.0);
+
+    // Range test
+    double AZ = ZABS(ZR, ZI);
+    double FN = FNU + static_cast<double>(N - 1);
+    AA = 0.5 / TOL;
+    double BB = static_cast<double>(I1MACH(9)) * 0.5;
+    AA = std::min(AA, BB);
+    if (AZ > AA || FN > AA) { NZ = 0; IERR = 4; return; }
+    AA = std::sqrt(AA);
+    if (AZ > AA || FN > AA) { IERR = 3; }
+
+    // Calculate CSGN = exp(FNU * HPI * i)
+    double CII = 1.0;
+    int INU = static_cast<int>(FNU);
+    int INUH = INU / 2;
+    int IR = INU - 2 * INUH;
+    double HPI = M_PI / 2.0;
+    double ARG = (FNU - static_cast<double>(INU - IR)) * HPI;
+    double CSGNR = std::cos(ARG);
+    double CSGNI = std::sin(ARG);
+    if ((INUH % 2) != 0) {
+        CSGNR = -CSGNR;
+        CSGNI = -CSGNI;
+    }
+
+    // ZN is in the right half plane
+    double ZNR = ZI;
+    double ZNI = -ZR;
+    if (ZI < 0.0) {
+        ZNR = -ZNR;
+        ZNI = -ZNI;
+        CSGNI = -CSGNI;
+        CII = -CII;
+    }
+
+    // Call ZBINU
+    ZBINU(ZNR, ZNI, FNU, KODE, N, CYR, CYI, NZ, RL, FNUL, TOL, ELIM, ALIM);
+    if (NZ < 0) {
+        if (NZ == -2) { NZ = 0; IERR = 5; return; }
+        NZ = 0;
+        IERR = 2;
+        return;
+    }
+    int NL = N - NZ;
+    if (NL == 0) return;
+    double RTOL = 1.0 / TOL;
+    double ASCLE = D1MACH(1) * RTOL * 1.0e3;
+
+    for (int i = 0; i < NL; ++i) {
+        AA = CYR[i];
+        BB = CYI[i];
+        double ATOL = 1.0;
+        if (std::max(std::abs(AA), std::abs(BB)) <= ASCLE) {
+            AA *= RTOL;
+            BB *= RTOL;
+            ATOL = TOL;
+        }
+        double STR = AA * CSGNR - BB * CSGNI;
+        double STI = AA * CSGNI + BB * CSGNR;
+        CYR[i] = STR * ATOL;
+        CYI[i] = STI * ATOL;
+        STR = -CSGNI * CII;
+        CSGNI = CSGNR * CII;
+        CSGNR = STR;
+    }
+}
